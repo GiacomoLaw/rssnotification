@@ -10,19 +10,19 @@ from time import time, sleep
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
+# start pushover
 usertoken = os.getenv("USERTOKEN")
 token = os.getenv("TOKEN")
 init(token)
 
 while True:
-	print('done')
 	sleep(10 - time() % 10)
 	with open('rsslist.txt') as f:
-		print('doing')
 		for line in f:
 			d = feedparser.parse(line)
 			feed = feedparser.parse(line, modified=d.modified)
 			if feed.status == 304:
+				print('Nothing new')
 				break
 			else:
 				for key in feed["entries"]:
@@ -30,3 +30,4 @@ while True:
 					url = key['links'][0]['href']
 				print(title, url)
 				Client(usertoken).send_message(url, title=title)
+				print('Notification sent')
