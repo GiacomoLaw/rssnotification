@@ -25,6 +25,20 @@ def fileread():
 	while line:
 		stripped_line = line.strip('\n')
 		print(stripped_line)
+		d = feedparser.parse(stripped_line)
+		try:
+			feed = feedparser.parse(stripped_line, modified=d.modified)
+		except AttributeError:
+			feed = feedparser.parse(stripped_line, etag=d.etag)
+		if feed.status == 304:
+			print('Nothing new')
+		else:
+			for key in feed["entries"]:
+				title = key['title']
+				url = key['links'][0]['href']
+			print(title, url)
+			Client(usertoken).send_message(url, title=title)
+			print('Notification sent')
 		line = f.readline()
 	f.close()
 
