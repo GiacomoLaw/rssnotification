@@ -15,19 +15,18 @@ usertoken = os.getenv("USERTOKEN")
 token = os.getenv("TOKEN")
 init(token)
 
+# count lines in file
+count = 0
+for line in open('rsslist.txt'): count += 1
+
+def fileread():
+	f = open('rsslist.txt')
+	line = f.readline()
+	while line:
+		stripped_line = line.strip('\n')
+		print(stripped_line)
+		line = f.readline()
+	f.close()
+
 while True:
-	sleep(10 - time() % 10)
-	with open('rsslist.txt') as f:
-		for line in f:
-			d = feedparser.parse(line)
-			feed = feedparser.parse(line, modified=d.modified)
-			if feed.status == 304:
-				print('Nothing new')
-				break
-			else:
-				for key in feed["entries"]:
-					title = key['title']
-					url = key['links'][0]['href']
-				print(title, url)
-				Client(usertoken).send_message(url, title=title)
-				print('Notification sent')
+	fileread()
