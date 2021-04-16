@@ -20,6 +20,7 @@ count = 0
 for line in open('rsslist.txt'): count += 1
 
 def fileread():
+	sleep(10 - time() % 10)
 	f = open('rsslist.txt')
 	line = f.readline()
 	while line:
